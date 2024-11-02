@@ -177,7 +177,7 @@ export function importData(data) {
     frame.connectionPoints.forEach(p => {
       const detailRaw = data.find(d => d.positionId === p.id);
       if (detailRaw) {
-        p.installedPart = getDetailById(detailRaw.id);
+        p.installedPart = getDetailById(detailRaw.id).copy();
       }
     });
 
@@ -210,7 +210,7 @@ selectedFrame$.subscribe((frame) => {
  *
  * @type {Frame}
  */
-const frame = allDetails.filter(detail => detail.isFrame())[1];
+const frame = allDetails.filter(detail => detail.isFrame())[1].copy();
 frame.connectionPoints.forEach((p) => {
   switch (p.type) {
     case 'motor':

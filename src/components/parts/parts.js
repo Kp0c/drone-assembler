@@ -34,7 +34,7 @@ export class Parts extends BaseComponent {
       this.#renderParts();
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     selectedFrame$.subscribe((frame) => {
@@ -42,7 +42,7 @@ export class Parts extends BaseComponent {
       this.#renderParts();
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     this.#sectionsWrapper.addEventListener('dragstart', (event) => {
@@ -57,7 +57,7 @@ export class Parts extends BaseComponent {
 
       dragStart(+id);
     }, {
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     this.#sectionsWrapper.addEventListener('dragend', (event) => {
@@ -65,7 +65,7 @@ export class Parts extends BaseComponent {
 
       stopDrag();
     }, {
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     this.#maxPriceEl.addEventListener('input', (event) => {
@@ -77,7 +77,7 @@ export class Parts extends BaseComponent {
         setMaxPrice(null);
       }
     }, {
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     maxPrice$.subscribe((price) => {
@@ -87,7 +87,7 @@ export class Parts extends BaseComponent {
       this.#renderParts();
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
   }
 

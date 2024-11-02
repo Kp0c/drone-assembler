@@ -44,7 +44,7 @@ export class AssemblyArea extends BaseComponent {
 
     frames$.subscribe((frames) => this.#renderFrames(frames), {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     selectedFrame$.subscribe((frame) => {
@@ -52,7 +52,7 @@ export class AssemblyArea extends BaseComponent {
       this.#renderSelectedFrame();
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     this.#workingArea.addEventListener('dragover', (event) => {
@@ -85,14 +85,14 @@ export class AssemblyArea extends BaseComponent {
       }
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     canUndo$.subscribe((canUndo) => {
       this.#undo.disabled = !canUndo;
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     this.#undo.addEventListener('click', () => {
@@ -105,7 +105,7 @@ export class AssemblyArea extends BaseComponent {
       this.#redo.disabled = !canRedo;
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     this.#redo.addEventListener('click', () => {

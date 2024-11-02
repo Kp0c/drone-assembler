@@ -43,7 +43,7 @@ export class Cart extends BaseComponent {
       this.#renderProgress();
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     currentPrice$.subscribe((price) => {
@@ -52,7 +52,7 @@ export class Cart extends BaseComponent {
       this.#renderPriceAlert();
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     maxPrice$.subscribe((price) => {
@@ -60,7 +60,7 @@ export class Cart extends BaseComponent {
       this.#renderPriceAlert();
     }, {
       pushLatestValue: true,
-      signal: this.destroyedSignal.signal
+      signal: this.destroyedSignal
     });
 
     this.#sectionsWrapper.addEventListener('click', (event) => {
