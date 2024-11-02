@@ -1,0 +1,48 @@
+@import '../../styles/common.css';
+
+.frames-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  width: fit-content;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.frames-selector {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.frame {
+  border: 1px solid gray;
+  border-radius: 8px;
+  padding: 8px;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+
+  & h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+    text-align: center;
+  }
+
+  & .img-wrapper {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+
+    & img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+}
