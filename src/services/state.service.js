@@ -46,9 +46,15 @@ export const allParts$ = new Observable(allDetails.filter(detail => !detail.isFr
 
 /**
  * Is a frame selected
- * @type {Observable<boolean>}
+ * @type {Observable<Detail>}
  */
 export const selectedFrame$ = new Observable(null);
+
+/**'
+ * Selected parts
+ * @type {Observable<Detail[]>}
+ */
+export const selectedParts$ = new Observable([]);
 
 /**
  * Select a frame and trigger the allParts$ observable with the compatible details
@@ -59,3 +65,12 @@ export function selectFrame(frameName) {
 
   selectedFrame$.next(frame);
 }
+
+export function selectPart(partName) {
+  const part = allDetails.find(detail => !detail.isFrame() && detail.name === partName);
+
+  selectedParts$.next([...selectedParts$.getLatestValue(), part]);
+}
+
+selectedFrame$.next(allDetails.find(detail => detail.isFrame()));
+allParts$.next(allDetails.filter(detail => !detail.isFrame()));

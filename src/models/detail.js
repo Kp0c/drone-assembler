@@ -1,4 +1,6 @@
-﻿/**
+﻿import { sectionTypeToName } from '../helpers/maps.js';
+
+/**
  * Detail
  * @typedef {Object} Detail
  * @property {'frame' | 'motor' | 'battery' | 'fligh-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
@@ -33,5 +35,31 @@ export class Detail {
    */
   isCompatibleWith(frameInch) {
     return this.compatibilityInch.includes(frameInch);
+  }
+
+  /**
+   * Check if the detail is compatible with other parts
+   * @param {Detail[]} parts
+   * @returns {string}
+   */
+  checkCompatibilityWithOtherParts(parts) {
+    if (this.type === 'motor') {
+      const existingMotors = parts.filter(part => part.type === 'motor');
+      // ensure that all motors are the same
+      const otherMotor = existingMotors.find(motor => motor.name !== this.name);
+      if (otherMotor) {
+        return `This motor is not compatible with ${otherMotor.name}`;
+      }
+
+      // not more than 4 motors
+      if (existingMotors.length >= 4) {
+        return 'You can only have 4 motors';
+      }
+    } else {
+      const existingPart = parts.find(part => part.type === this.type);
+      if (existingPart) {
+        return `You can only have 1 ${ sectionTypeToName[this.type] }`;
+      }
+    }
   }
 }

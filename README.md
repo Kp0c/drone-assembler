@@ -16,6 +16,7 @@ For tests it is using [Vitest](https://vitest.dev/) that is using [WebdriverIO](
     - The `da-parts` represents the parts panel where you can drag parts from.
 - `helpers` - Helper classes
     - 'observable' - Observable implementation to add reactivity to the app
+    - `maps` - utility maps
 - `models` - Models
   - `detail` - Detail model
 - `services` - Services

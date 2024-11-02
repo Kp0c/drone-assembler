@@ -1,7 +1,8 @@
 import template from './parts.html?raw';
 import styles from './parts.css?inline'
 import { BaseComponent } from '../base-component.js';
-import { allParts$, selectedFrame$ } from '../../services/state.service.js';
+import { allParts$, selectedFrame$, selectedParts$ } from '../../services/state.service.js';
+import { sectionTypeToName } from '../../helpers/maps.js';
 
 export class Parts extends BaseComponent {
   #sectionsWrapper = this.shadowRoot.getElementById('sections-wrapper');
@@ -18,14 +19,11 @@ export class Parts extends BaseComponent {
    */
   #selectedFrame = null;
 
-  #sectionTypeToName = {
-    'motor': 'Motors',
-    'battery': 'Batteries',
-    'flight-controller': 'Flight Controllers',
-    'camera': 'Cameras',
-    'video-antenna': 'Video Antennas',
-    'radio-module': 'Radio Modules'
-  }
+  /**
+   * Selected parts
+   * @type {Detail[]}
+   */
+  #selectedParts = [];
 
   constructor() {
     super(template, styles);
@@ -44,6 +42,25 @@ export class Parts extends BaseComponent {
     }, {
       pushLatestValue: true,
       signal: this.destroyedSignal.signal
+    });
+
+    selectedParts$.subscribe((parts) => {
+      this.#selectedParts = parts;
+      this.#renderParts();
+    }, {
+      pushLatestValue: true,
+      signal: this.destroyedSignal.signal
+    });
+
+    this.#sectionsWrapper.addEventListener('dragstart', (event) => {
+      const target = event.target.closest('.part');
+      const name = target?.dataset.name;
+
+      if (!name) {
+        console.error('No name found');
+      }
+
+      event.dataTransfer.setData('text/plain', name);
     });
   }
 
@@ -73,22 +90,33 @@ export class Parts extends BaseComponent {
       section.classList.add('section-items');
 
       const title = document.createElement('h3');
-      title.textContent = this.#sectionTypeToName[type];
+      title.textContent = sectionTypeToName[type];
       section.appendChild(title);
 
       parts.forEach((part) => {
-        const partElement = this.#partTemplate.content.cloneNode(true);
+        const partElementClone = this.#partTemplate.content.cloneNode(true);
+        const partElement = partElementClone.querySelector('.part');
 
         partElement.querySelector('#name').textContent = part.name + ` ($${part.price})`;
         partElement.querySelector('#img').src = part.img;
         partElement.querySelector('#img').alt = part.name;
 
-        if (part.isCompatibleWith(this.#selectedFrame.compatibilityInch[0])) {
-          partElement.querySelector('#error').hidden = true;
-        } else {
-          partElement.querySelector('#error').hidden = false
-          partElement.querySelector('#error').textContent = `Not compatible with ${this.#selectedFrame.name}`;
+        let error = part.checkCompatibilityWithOtherParts(this.#selectedParts);
+
+        if (!part.isCompatibleWith(this.#selectedFrame.compatibilityInch[0])) {
+          error = `Not compatible with ${this.#selectedFrame.name} frame`;
         }
+
+        if (error) {
+          partElement.querySelector('#error').hidden = false
+          partElement.querySelector('#error').textContent = error;
+
+          partElement.draggable = false;
+        } else {
+          partElement.querySelector('#error').hidden = true;
+        }
+
+        partElement.dataset.name = part.name;
 
         section.appendChild(partElement);
       });

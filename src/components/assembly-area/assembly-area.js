@@ -2,7 +2,7 @@ import template from './assembly-area.html?raw';
 import styles from './assembly-area.css?inline'
 import { BaseComponent } from '../base-component.js';
 import { Detail } from '../../models/detail.js';
-import { frames$, selectedFrame$, selectFrame } from '../../services/state.service.js';
+import { frames$, selectedFrame$, selectFrame, selectPart } from '../../services/state.service.js';
 
 export class AssemblyArea extends BaseComponent {
   #frames = this.shadowRoot.getElementById('frames');
@@ -40,6 +40,17 @@ export class AssemblyArea extends BaseComponent {
     }, {
       pushLatestValue: true,
       signal: this.destroyedSignal.signal
+    });
+
+    this.#workingArea.addEventListener('dragover', (event) => {
+      event.preventDefault();
+    });
+
+    this.#workingArea.addEventListener('drop', (event) => {
+      event.preventDefault();
+      const name = event.dataTransfer.getData('text/plain');
+
+      selectPart(name);
     });
   }
 

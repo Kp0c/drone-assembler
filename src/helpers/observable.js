@@ -76,4 +76,12 @@ export class Observable {
     this.#latestValue = value;
     this.#observers.forEach((observer) => observer(value));
   }
+
+  /**
+   * Get the latest value emitted by the observable.
+   * @returns {T}
+   */
+  getLatestValue() {
+    return this.#latestValue;
+  }
 }
