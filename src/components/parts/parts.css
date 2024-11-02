@@ -4,6 +4,8 @@
   max-height: 100%;
   overflow: auto;
   padding: 16px;
+  z-index: 1;
+  position: relative;
 
   text-align: center;
   background-color: white;

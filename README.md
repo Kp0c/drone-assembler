@@ -45,10 +45,9 @@ For tests it is using [Vitest](https://vitest.dev/) that is using [WebdriverIO](
 - go back and forth in history
 - import from json/csv
 - set the max price and check it everywhere
+- zooming and panning
 
 ## Improvements in case if I have more time
-- [ ] move drone to the center of the screen
-- [ ] fix a defect on bigger screens
 - [ ] fix duplicated parts of cart and parts components
 - [ ] Extract part into a separate component
 - [ ] Add tests for the components

@@ -27,6 +27,36 @@ export class AssemblyArea extends BaseComponent {
    */
   #maxPrice = null;
 
+  /**
+   *
+   * @type {number}
+   */
+  #zoomLevel = 1;
+
+  /**
+   *
+   * @type {number}
+   */
+  #panX = 0;
+
+  /**
+   *
+   * @type {number}
+   */
+  #panY = 0;
+
+  /**
+   *
+   * @type {boolean}
+   */
+  #isPanning = false;
+
+  /**
+   *
+   * @type {{x: number, y: number}}
+   */
+  #startPan = { x: 0, y: 0 };
+
   constructor() {
     super(template, styles);
 
@@ -121,6 +151,8 @@ export class AssemblyArea extends BaseComponent {
       pushLatestValue: true,
       signal: this.destroyedSignal
     });
+
+    this.#setupZoomAndPanning();
   }
 
   #renderSelectedFrame() {
@@ -246,21 +278,29 @@ export class AssemblyArea extends BaseComponent {
     }
   }
 
+  /**
+   * Render the installed parts
+   */
   #renderParts() {
+    // Clear any existing parts to avoid duplicates
     this.#workingArea.querySelectorAll('.installed-part').forEach(part => part.remove());
-    if (!this.#currentFrame) {
-      return;
-    }
+
+    if (!this.#currentFrame) return;
 
     const sortedPoints = this.#currentFrame.connectionPoints.sort((a, b) => a.zIndex - b.zIndex);
     const installedParts = sortedPoints.filter(p => p.installedPart);
 
     const multipliers = this.#getImageMultipliers();
+
     installedParts.forEach((point) => {
       const partElement = document.createElement('img');
       partElement.classList.add('installed-part');
-      partElement.style.left = `${point.x * multipliers.x - point.size / 2}px`;
-      partElement.style.top = `${point.y * multipliers.y - point.size / 2}px`;
+
+      const adjustedX = point.x * multipliers.x - point.size / 2;
+      const adjustedY = point.y * multipliers.y - point.size / 2;
+
+      partElement.style.left = `${adjustedX}px`;
+      partElement.style.top = `${adjustedY}px`;
       partElement.width = point.size;
       partElement.height = point.size;
       partElement.src = point.installedPart.img;
@@ -304,6 +344,10 @@ export class AssemblyArea extends BaseComponent {
     }
   }
 
+  /**
+   * Import from JSON
+   * @param {Object} data
+   */
   #importJson(data) {
     if (!Array.isArray(data)) {
       return;
@@ -312,6 +356,10 @@ export class AssemblyArea extends BaseComponent {
     importData(data);
   }
 
+  /**
+   * Import from CSV
+   * @param {string} data
+   */
   #importCsv(data) {
     let rows = data.split('\n');
 
@@ -327,5 +375,89 @@ export class AssemblyArea extends BaseComponent {
     });
 
     importData(importedData);
+  }
+
+  /**
+   * Setup zoom and panning
+   */
+  #setupZoomAndPanning() {
+    this.#workingArea.addEventListener('wheel', (event) => this.#handleZoom(event), {
+      passive: false
+    }, {
+      signal: this.destroyedSignal
+    });
+
+    this.#workingArea.addEventListener('mousedown', (event) => this.#startPanning(event), {
+      signal: this.destroyedSignal
+    });
+    window.addEventListener('mousemove', (event) => this.#pan(event), {
+      signal: this.destroyedSignal
+    });
+    window.addEventListener('mouseup', () => this.#stopPanning(), {
+      signal: this.destroyedSignal
+    });
+
+    this.#workingArea.addEventListener('touchstart', (event) => this.#startPanning(event.touches[0]), {
+      signal: this.destroyedSignal
+    });
+    this.#workingArea.addEventListener('touchmove', (event) => this.#pan(event.touches[0]), {
+      signal: this.destroyedSignal
+    });
+    this.#workingArea.addEventListener('touchend', () => this.#stopPanning(), {
+      signal: this.destroyedSignal
+    });
+  }
+
+  /**
+   * Handle zoom
+   * @param {WheelEvent} event
+   */
+  #handleZoom(event) {
+    event.preventDefault();
+    const zoomIntensity = 0.1;
+    const zoomDirection = event.deltaY > 0 ? -1 : 1;
+    this.#zoomLevel += zoomDirection * zoomIntensity;
+    this.#zoomLevel = Math.min(Math.max(0.5, this.#zoomLevel), 3);
+
+    this.#applyTransformations();
+  }
+
+  /**
+   * Start panning
+   * @param {MouseEvent | Touch} event
+   */
+  #startPanning(event) {
+    this.#isPanning = true;
+    this.#startPan = { x: event.clientX - this.#panX, y: event.clientY - this.#panY };
+    event.preventDefault();
+  }
+
+  /**
+   * Pan the image
+   * @param {MouseEvent | Touch} event
+   */
+  #pan(event) {
+    if (!this.#isPanning) return;
+
+    this.#panX = event.clientX - this.#startPan.x;
+    this.#panY = event.clientY - this.#startPan.y;
+
+    this.#applyTransformations();
+  }
+
+  /**
+   * Stop panning
+   */
+  #stopPanning() {
+    this.#isPanning = false;
+  }
+
+  /**
+   * Apply transformations
+   */
+  #applyTransformations() {
+    this.#workingArea.style.transform = `translate(${this.#panX}px, ${this.#panY}px) scale(${this.#zoomLevel})`;
+
+    this.#renderParts();
   }
 }

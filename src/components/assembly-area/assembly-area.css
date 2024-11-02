@@ -14,6 +14,9 @@
 
 .history {
   padding: 16px;
+  width: fit-content;
+  z-index: 1;
+  position: relative;
 }
 
 .frames-selector {
@@ -53,6 +56,7 @@
 
 .working-area {
   position: relative;
+  transform-origin: center center;
 
   &[hidden] {
     display: none;
