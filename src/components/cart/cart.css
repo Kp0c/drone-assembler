@@ -25,6 +25,10 @@
   }
 }
 
+.export {
+  padding: 16px 8px;
+}
+
 .progress {
   display: flex;
   margin: 8px 16px 16px;

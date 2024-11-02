@@ -1,5 +1,5 @@
 import template from './cart.html?raw';
-import styles from './cart.css?inline'
+import styles from './cart.css?inline';
 import { BaseComponent } from '../base-component.js';
 import { clearAll, selectedFrame$, uninstallItem } from '../../services/state.service.js';
 import { sectionTypeToName } from '../../helpers/utilities.js';
@@ -10,6 +10,10 @@ export class Cart extends BaseComponent {
   #totalPrice = this.shadowRoot.getElementById('total-price');
   #clearAll = this.shadowRoot.getElementById('clear-all');
   #progress = this.shadowRoot.getElementById('progress');
+  #exportActions = this.shadowRoot.getElementById('export-actions');
+  #exportError = this.shadowRoot.getElementById('export-error');
+  #exportJson = this.shadowRoot.getElementById('export-json');
+  #exportCsv = this.shadowRoot.getElementById('export-csv');
 
   /**
    * Selected frame
@@ -43,6 +47,18 @@ export class Cart extends BaseComponent {
 
     this.#clearAll.addEventListener('click', () => {
       clearAll();
+    }, {
+      signal: this.destroyedSignal
+    });
+
+    this.#exportJson.addEventListener('click', () => {
+      this.#exportToJson();
+    }, {
+      signal: this.destroyedSignal
+    });
+
+    this.#exportCsv.addEventListener('click', () => {
+      this.#exportToCsv();
     }, {
       signal: this.destroyedSignal
     });
@@ -140,5 +156,76 @@ export class Cart extends BaseComponent {
       this.#progress.appendChild(neededElement);
     }
 
+    if (neededParts > 0) {
+      this.#exportActions.hidden = true;
+      this.#exportError.hidden = false;
+    } else {
+      this.#exportActions.hidden = false;
+      this.#exportError.hidden = true;
+    }
+  }
+
+  #exportToJson() {
+    const data = this.#exportData();
+
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'drone.json';
+    a.click();
+  }
+
+  #exportToCsv() {
+    const data = this.#exportData();
+
+    // headers
+    data.unshift({
+      type: 'Type',
+      name: 'Name',
+      quantity: 'Quantity',
+      price: 'Price',
+      compatibilityInch: 'Compatibility Inch',
+    });
+
+    const csv = data.map((row) => {
+      return Object.values(row).join(',');
+    }).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'drone.csv';
+    a.click();
+  }
+
+  #exportData() {
+    const parts = [this.#selectedFrame, ...this.#selectedFrame.connectionPoints
+      .filter((p) => p.installedPart)
+      .map((p) => p.installedPart)];
+
+    const groupedParts = parts.reduce((acc, part) => {
+      if (!acc[part.type]) {
+        acc[part.type] = [];
+      }
+
+      acc[part.type].push(part);
+
+      return acc;
+    }, {});
+
+    return Object.entries(groupedParts).map(([type, parts]) => {
+      const part = parts[0];
+      return {
+        type: part.type,
+        name: part.name,
+        quantity: parts.length,
+        price: parts.reduce((acc, p) => acc + p.price, 0),
+        compatibilityInch: part.compatibilityInch,
+      };
+    });
   }
 }

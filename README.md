@@ -38,6 +38,8 @@ For tests it is using [Vitest](https://vitest.dev/) that is using [WebdriverIO](
 - allow to edit assembly
 - allow to clear all
 - show the progress of the assembly
+- export to json
+- export to csv
 
 ## Improvements in case if I have more time
 - [ ] move drone to the center of the screen
