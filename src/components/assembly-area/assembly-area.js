@@ -188,11 +188,13 @@ export class AssemblyArea extends BaseComponent {
   }
 
   #renderParts() {
+    this.#workingArea.querySelectorAll('.installed-part').forEach(part => part.remove());
     if (!this.#currentFrame) {
       return;
     }
 
-    const installedParts = this.#currentFrame.connectionPoints.filter(p => p.installedPart);
+    const sortedPoints = this.#currentFrame.connectionPoints.sort((a, b) => a.zIndex - b.zIndex);
+    const installedParts = sortedPoints.filter(p => p.installedPart);
 
     console.log({installedParts});
 
@@ -200,8 +202,10 @@ export class AssemblyArea extends BaseComponent {
     installedParts.forEach((point) => {
       const partElement = document.createElement('img');
       partElement.classList.add('installed-part');
-      partElement.style.left = `${point.x * multipliers.x - 125}px`;
-      partElement.style.top = `${point.y * multipliers.y - 125}px`;
+      partElement.style.left = `${point.x * multipliers.x - point.size / 2}px`;
+      partElement.style.top = `${point.y * multipliers.y - point.size / 2}px`;
+      partElement.width = point.size;
+      partElement.height = point.size;
       partElement.src = point.installedPart.img;
       partElement.alt = point.installedPart.name;
 

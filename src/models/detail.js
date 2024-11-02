@@ -3,16 +3,18 @@
 /**
  * Detail
  * @typedef {Object} ConnectionPoint
- * @property {'motor' | 'battery' | 'fligh-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
+ * @property {'motor' | 'battery' | 'flight-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
  * @property {number} x
  * @property {number} y
+ * @property {number} size
+ * @property {number} zIndex
  * @property {Detail} installedPart
  */
 
 /**
  * Detail
  * @typedef {Object} Detail
- * @property {'frame' | 'motor' | 'battery' | 'fligh-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
+ * @property {'frame' | 'motor' | 'battery' | 'flight-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
  * @property {string} name
  * @property {number} price
  * @property {number[]} compatibilityInch

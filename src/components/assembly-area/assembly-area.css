@@ -67,6 +67,5 @@
 
 .installed-part {
   position: absolute;
-  width: 250px;
   aspect-ratio: 1 / 1;
 }
