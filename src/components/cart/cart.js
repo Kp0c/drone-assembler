@@ -1,7 +1,7 @@
 import template from './cart.html?raw';
 import styles from './cart.css?inline';
 import { BaseComponent } from '../base-component.js';
-import { clearAll, selectedFrame$, uninstallItem } from '../../services/state.service.js';
+import { clearAll, currentPrice$, maxPrice$, selectedFrame$, uninstallItem } from '../../services/state.service.js';
 import { sectionTypeToName } from '../../helpers/utilities.js';
 
 export class Cart extends BaseComponent {
@@ -14,6 +14,7 @@ export class Cart extends BaseComponent {
   #exportError = this.shadowRoot.getElementById('export-error');
   #exportJson = this.shadowRoot.getElementById('export-json');
   #exportCsv = this.shadowRoot.getElementById('export-csv');
+  #priceAlert = this.shadowRoot.getElementById('price-alert');
 
   /**
    * Selected frame
@@ -21,20 +22,52 @@ export class Cart extends BaseComponent {
    */
   #selectedFrame = null;
 
+  /**
+   *
+   * @type {number | null}
+   */
+  #maxPrice = null;
+
+  /**
+   *
+   * @type {number}
+   */
+  #currentPrice = 0;
+
   constructor() {
     super(template, styles);
 
     selectedFrame$.subscribe((frame) => {
       this.#selectedFrame = frame;
       this.#renderParts();
-      this.#renderPrice();
       this.#renderProgress();
     }, {
       pushLatestValue: true,
       signal: this.destroyedSignal.signal
     });
 
+    currentPrice$.subscribe((price) => {
+      this.#currentPrice = price;
+      this.#renderPrice();
+      this.#renderPriceAlert();
+    }, {
+      pushLatestValue: true,
+      signal: this.destroyedSignal.signal
+    });
+
+    maxPrice$.subscribe((price) => {
+      this.#maxPrice = price;
+      this.#renderPriceAlert();
+    }, {
+      pushLatestValue: true,
+      signal: this.destroyedSignal.signal
+    });
+
     this.#sectionsWrapper.addEventListener('click', (event) => {
+      if (event.target.tagName !== 'BUTTON') {
+        return;
+      }
+
       const target = event.target.closest('.part');
       const id = target?.dataset.id;
 
@@ -122,16 +155,22 @@ export class Cart extends BaseComponent {
     });
   }
 
+  /**
+   * Render the total price
+   */
   #renderPrice() {
-    const price = this.#selectedFrame?.connectionPoints.reduce((acc, p) => {
-      if (p.installedPart) {
-        acc += p.installedPart.price;
-      }
+    this.#totalPrice.textContent = this.#currentPrice.toString();
+  }
 
-      return acc;
-    }, this.#selectedFrame?.price ?? 0) ?? 0;
-
-    this.#totalPrice.textContent = price.toString();
+  /**
+   * Render the total price
+   */
+  #renderPriceAlert() {
+    if (this.#maxPrice === null) {
+      this.#priceAlert.hidden = true;
+    } else {
+      this.#priceAlert.hidden = this.#currentPrice <= this.#maxPrice;
+    }
   }
 
   #renderProgress() {

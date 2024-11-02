@@ -2,7 +2,7 @@ import template from './assembly-area.html?raw';
 import styles from './assembly-area.css?inline'
 import { BaseComponent } from '../base-component.js';
 import { Detail } from '../../models/detail.js';
-import { currentDragItem$, frames$, getDetailById, importData, selectedFrame$, selectFrame, selectPart, stopDrag } from '../../services/state.service.js';
+import { currentDragItem$, frames$, getDetailById, importData, maxPrice$, selectedFrame$, selectFrame, selectPart, stopDrag } from '../../services/state.service.js';
 import { canRedo$, canUndo$, redo, undo } from '../../services/history.service.js';
 
 export class AssemblyArea extends BaseComponent {
@@ -21,6 +21,11 @@ export class AssemblyArea extends BaseComponent {
    * @type {Frame}
    */
   #currentFrame = null;
+
+  /**
+   * @type {number | null}
+   */
+  #maxPrice = null;
 
   constructor() {
     super(template, styles);
@@ -108,6 +113,14 @@ export class AssemblyArea extends BaseComponent {
     }, {
       signal: this.destroyedSignal
     });
+
+    maxPrice$.subscribe((maxPrice) => {
+      this.#maxPrice = maxPrice;
+      this.#renderFrames(frames$.getLatestValue());
+    }, {
+      pushLatestValue: true,
+      signal: this.destroyedSignal
+    });
   }
 
   #renderSelectedFrame() {
@@ -132,7 +145,16 @@ export class AssemblyArea extends BaseComponent {
       frameElement.querySelector('#frame-name').textContent = frame.name + ` ($${frame.price})`;
       frameElement.querySelector('#frame-img').src = frame.img;
       frameElement.querySelector('#frame-img').alt = frame.name;
-      frameElement.querySelector('#frame-select').id = `select-${frame.id}`;
+      const frameSelect = frameElement.querySelector('#frame-select');
+      frameSelect.id = `select-${frame.id}`;
+
+      if (this.#maxPrice !== null && frame.price > this.#maxPrice) {
+        frameSelect.disabled = true;
+        frameElement.querySelector('#price-alert').hidden = false;
+      } else {
+        frameSelect.disabled = false;
+        frameElement.querySelector('#price-alert').hidden = true;
+      }
 
       this.#frames.appendChild(frameElement);
     });

@@ -44,6 +44,7 @@ For tests it is using [Vitest](https://vitest.dev/) that is using [WebdriverIO](
 - export to csv
 - go back and forth in history
 - import from json/csv
+- set the max price and check it everywhere
 
 ## Improvements in case if I have more time
 - [ ] move drone to the center of the screen

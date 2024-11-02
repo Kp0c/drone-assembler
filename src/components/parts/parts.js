@@ -1,12 +1,13 @@
 import template from './parts.html?raw';
 import styles from './parts.css?inline'
 import { BaseComponent } from '../base-component.js';
-import { allParts$, dragStart, selectedFrame$, stopDrag } from '../../services/state.service.js';
+import { allParts$, dragStart, maxPrice$, selectedFrame$, setMaxPrice, stopDrag } from '../../services/state.service.js';
 import { sectionTypeToName } from '../../helpers/utilities.js';
 
 export class Parts extends BaseComponent {
   #sectionsWrapper = this.shadowRoot.getElementById('sections-wrapper');
   #partTemplate = this.shadowRoot.getElementById('part-template');
+  #maxPriceEl = this.shadowRoot.getElementById('max-price');
 
   /**
    * @type {Detail[]}
@@ -18,6 +19,12 @@ export class Parts extends BaseComponent {
    * @type {Frame}
    */
   #selectedFrame = null;
+
+  /**
+   *
+   * @type {number | null}
+   */
+  #maxPrice = null;
 
   constructor() {
     super(template, styles);
@@ -50,13 +57,37 @@ export class Parts extends BaseComponent {
 
       dragStart(+id);
     }, {
-      signal: this.destroyedSignal
+      signal: this.destroyedSignal.signal
     });
 
     this.#sectionsWrapper.addEventListener('dragend', (event) => {
       event.preventDefault();
 
       stopDrag();
+    }, {
+      signal: this.destroyedSignal.signal
+    });
+
+    this.#maxPriceEl.addEventListener('input', (event) => {
+      const value = event.target.value;
+
+      if (value) {
+        setMaxPrice(+value);
+      } else {
+        setMaxPrice(null);
+      }
+    }, {
+      signal: this.destroyedSignal.signal
+    });
+
+    maxPrice$.subscribe((price) => {
+      this.#maxPrice = price;
+      this.#maxPriceEl.value = price;
+
+      this.#renderParts();
+    }, {
+      pushLatestValue: true,
+      signal: this.destroyedSignal.signal
     });
   }
 
@@ -83,6 +114,8 @@ export class Parts extends BaseComponent {
 
     const installedParts = this.#selectedFrame.connectionPoints.filter((p) => p.installedPart).map((p) => p.installedPart);
 
+    const currentPrice = installedParts.reduce((acc, part) => acc + part.price, this.#selectedFrame.price);
+
     Object.entries(groupedParts).forEach(([type, parts]) => {
       const section = document.createElement('section');
       section.classList.add('section-items');
@@ -99,7 +132,16 @@ export class Parts extends BaseComponent {
         partElement.querySelector('#img').src = part.img;
         partElement.querySelector('#img').alt = part.name;
 
-        let error = part.checkCompatibilityWithOtherParts(installedParts);
+        let error = null;
+
+        if (this.#maxPrice !== null && currentPrice + part.price > this.#maxPrice) {
+          error = `You cannot add this part as the new total price will exceed the maximum price of $${this.#maxPrice}`;
+        }
+
+        const compatibilityError = part.checkCompatibilityWithOtherParts(installedParts);
+        if (compatibilityError) {
+          error = compatibilityError;
+        }
 
         if (!part.isCompatibleWith(this.#selectedFrame.compatibilityInch[0])) {
           error = `Not compatible with ${this.#selectedFrame.name} frame`;

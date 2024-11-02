@@ -76,6 +76,18 @@ export const selectedFrame$ = new Observable(null);
 export const currentDragItem$ = new Observable(null);
 
 /**
+ * Current price
+ * @type {Observable<number>}
+ */
+export const currentPrice$ = new Observable(0);
+
+/**
+ * Max price
+ * @type {Observable<number | null>}
+ */
+export const maxPrice$ = new Observable(null);
+
+/**
  * Select a frame and trigger the allParts$ observable with the compatible details
  * @param {number} id
  */
@@ -173,38 +185,58 @@ export function importData(data) {
   }
 }
 
+export function setMaxPrice(price) {
+  maxPrice$.next(price);
+}
 
-// /**
-//  *
-//  * @type {Frame}
-//  */
-// const frame = allDetails.filter(detail => detail.isFrame())[1];
-// frame.connectionPoints.forEach((p) => {
-//   switch (p.type) {
-//     case 'motor':
-//       p.installedPart = allDetails.find(detail => detail.type === 'motor' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-//       break;
-//     case 'battery':
-//       p.installedPart = allDetails.find(detail => detail.type === 'battery' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-//       break;
-//     case 'flight-controller':
-//       p.installedPart = allDetails.find(detail => detail.type === 'flight-controller' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-//       break;
-//     case 'camera':
-//       p.installedPart = allDetails.find(detail => detail.type === 'camera' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-//       break;
-//     case 'video-antenna':
-//       p.installedPart = allDetails.find(detail => detail.type === 'video-antenna' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-//       break;
-//     case 'radio-module':
-//       p.installedPart = allDetails.find(detail => detail.type === 'radio-module' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-//       break;
-//   }
-// });
-//
-// selectedFrame$.next(frame);
-// setTimeout(() => {
-//   selectedFrame$.next(frame);
-// }, 50);
-// allParts$.next(allDetails.filter(detail => !detail.isFrame()));
+selectedFrame$.subscribe((frame) => {
+  if (!frame) {
+    currentPrice$.next(0);
+    return;
+  }
+
+  const price = frame.connectionPoints.reduce((acc, p) => {
+    if (p.installedPart) {
+      acc += p.installedPart.price;
+    }
+    return acc;
+  }, frame.price);
+
+  currentPrice$.next(price);
+});
+
+
+/**
+ *
+ * @type {Frame}
+ */
+const frame = allDetails.filter(detail => detail.isFrame())[1];
+frame.connectionPoints.forEach((p) => {
+  switch (p.type) {
+    case 'motor':
+      p.installedPart = allDetails.find(detail => detail.type === 'motor' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'battery':
+      p.installedPart = allDetails.find(detail => detail.type === 'battery' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'flight-controller':
+      p.installedPart = allDetails.find(detail => detail.type === 'flight-controller' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'camera':
+      p.installedPart = allDetails.find(detail => detail.type === 'camera' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'video-antenna':
+      p.installedPart = allDetails.find(detail => detail.type === 'video-antenna' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'radio-module':
+      p.installedPart = allDetails.find(detail => detail.type === 'radio-module' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+  }
+});
+
+selectedFrame$.next(frame);
+setTimeout(() => {
+  selectedFrame$.next(frame);
+}, 50);
+allParts$.next(allDetails.filter(detail => !detail.isFrame()));
 
