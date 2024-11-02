@@ -15,4 +15,23 @@ export class Detail {
     this.compatibilityInch = compatibilityInch;
     this.img = img;
   }
+
+  /**
+   * Check if the detail is a frame
+   *
+   * @returns {boolean}
+   */
+  isFrame() {
+    return this.type === 'frame';
+  }
+
+  /**
+   * Check if the detail is compatible with a frame
+   *
+   * @param {number} frameInch
+   * @returns {boolean}
+   */
+  isCompatibleWith(frameInch) {
+    return this.compatibilityInch.includes(frameInch);
+  }
 }

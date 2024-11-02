@@ -1,1 +1,21 @@
 @import '../../styles/common.css';
+
+.parts-container {
+  width: 300px;
+  max-height: 100%;
+  overflow: auto;
+  padding: 16px;
+
+  text-align: center;
+}
+
+.section-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+
+  & h3 {
+    margin: 24px 0 0;
+  }
+}

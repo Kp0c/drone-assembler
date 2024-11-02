@@ -35,28 +35,27 @@ const allDetails = [
  *
  * @type {Observable<Detail[]>}
  */
-export const frames$ = new Observable(allDetails.filter(detail => detail.type === 'frame'));
+export const frames$ = new Observable(allDetails.filter(detail => detail.isFrame()));
 
 /**
- * All details that are available right now
+ * All parts (not frame)
  *
  * @type {Observable<Detail[]>}
  */
-export const details$ = new Observable();
+export const allParts$ = new Observable(allDetails.filter(detail => !detail.isFrame()));
 
 /**
  * Is a frame selected
  * @type {Observable<boolean>}
  */
-export const isFrameSelected$ = new Observable(false);
+export const selectedFrame$ = new Observable(false);
 
 /**
- * Select a frame and trigger the details$ observable with the compatible details
+ * Select a frame and trigger the allParts$ observable with the compatible details
  * @param {string} frameName
  */
 export function selectFrame(frameName) {
-  const frame = allDetails.find(detail => detail.type === 'frame' && detail.name === frameName);
-  details$.next(allDetails.filter(detail => detail.type !== 'frame' && detail.compatibilityInch.includes(frame.compatibilityInch[0])));
+  const frame = allDetails.find(detail => detail.isFrame() && detail.name === frameName);
 
-  isFrameSelected$.next(true);
+  selectedFrame$.next(frame);
 }

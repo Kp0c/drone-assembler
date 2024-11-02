@@ -2,7 +2,7 @@ import template from './assembly-area.html?raw';
 import styles from './assembly-area.css?inline'
 import { BaseComponent } from '../base-component.js';
 import { Detail } from '../../models/detail.js';
-import { frames$, isFrameSelected$, selectFrame } from '../../services/state.service.js';
+import { frames$, selectedFrame$, selectFrame } from '../../services/state.service.js';
 
 export class AssemblyArea extends BaseComponent {
   #frames = this.shadowRoot.getElementById('frames');
@@ -27,8 +27,8 @@ export class AssemblyArea extends BaseComponent {
       signal: this.destroyedSignal.signal
     });
 
-    isFrameSelected$.subscribe((isFrameSelected) => {
-      this.#framesWrapper.hidden = isFrameSelected;
+    selectedFrame$.subscribe((frame) => {
+      this.#framesWrapper.hidden = !!frame;
     }, {
       pushLatestValue: true,
       signal: this.destroyedSignal.signal
@@ -45,7 +45,7 @@ export class AssemblyArea extends BaseComponent {
     frames.forEach((frame) => {
       const frameElement = this.#frameTemplate.content.cloneNode(true);
 
-      frameElement.querySelector('#frame-name').textContent = frame.name;
+      frameElement.querySelector('#frame-name').textContent = frame.name + ` ($${frame.price})`;
       frameElement.querySelector('#frame-img').src = frame.img;
       frameElement.querySelector('#frame-img').alt = frame.name;
       frameElement.querySelector('#frame-select').id = `select-${frame.name}`;
