@@ -5,7 +5,7 @@ import { Detail, Frame } from '../models/detail';
  * @type {Detail[]}
  */
 const allDetails = [
-  new Frame(1, 'Mark 4 7"', 12, [7], 'assets/images/1 - frame 7 inches Mark_4.png', [
+  new Frame(1, 'Mark 4 7"', 12, [7], '/images/1 - frame 7 inches Mark_4.png', [
     { id: 1, type: 'motor', x: 219, y: 329, size: 250, zIndex: 1 },
     { id: 2, type: 'motor', x: 1824, y: 329, size: 250, zIndex: 1 },
     { id: 3, type: 'motor', x: 219, y: 1706, size: 250, zIndex: 1 },
@@ -16,7 +16,7 @@ const allDetails = [
     { id: 8, type: 'video-antenna', x: 1024, y: 300, size: 300, zIndex: 1 },
     { id: 9, type: 'radio-module', x: 1024, y: 500, size: 300, zIndex: 1 },
   ]),
-  new Frame(2, 'Mark 4 v2 10"', 20, [10], 'assets/images/2 - frame 10 inches Mark_4-v2.png', [
+  new Frame(2, 'Mark 4 v2 10"', 20, [10], '/images/2 - frame 10 inches Mark_4-v2.png', [
     { id: 1, type: 'motor', x: 149, y: 308, size: 250, zIndex: 1 },
     { id: 2, type: 'motor', x: 1882, y: 308, size: 250, zIndex: 1 },
     { id: 3, type: 'motor', x: 149, y: 1768, size: 250, zIndex: 1 },
@@ -28,25 +28,25 @@ const allDetails = [
     { id: 9, type: 'radio-module', x: 1024, y: 400, size: 300, zIndex: 1 },
   ]),
 
-  new Detail(3, 'motor', 'FlashHobby 2807 1300kv + Props HQProp 7x4x3', 55, [7], 'assets/images/3 - motor 7 inches 2807 1300kv+7x4x3.png'),
-  new Detail(4, 'motor', 'EMAX 2807 1300kv + Props HQProp 7x4x3', 45, [7], 'assets/images/3 - motor 7 inches 2807 1300kv+7x4x3.png'),
-  new Detail(5, 'motor', 'ReadyToSky 3115 900kv + Props HQ MacroQuad Prop 10x5x3', 70, [10], 'assets/images/4 - motor 10 inches 3115+10x5x3.png'),
-  new Detail(6, 'motor', 'BrotherHobby Tornado 3115 900kv + Props HQ MacroQuad Prop 10x5x3', 110, [10], 'assets/images/4 - motor 10 inches 3115+10x5x3.png'),
+  new Detail(3, 'motor', 'FlashHobby 2807 1300kv + Props HQProp 7x4x3', 55, [7], '/images/3 - motor 7 inches 2807 1300kv+7x4x3.png'),
+  new Detail(4, 'motor', 'EMAX 2807 1300kv + Props HQProp 7x4x3', 45, [7], '/images/3 - motor 7 inches 2807 1300kv+7x4x3.png'),
+  new Detail(5, 'motor', 'ReadyToSky 3115 900kv + Props HQ MacroQuad Prop 10x5x3', 70, [10], '/images/4 - motor 10 inches 3115+10x5x3.png'),
+  new Detail(6, 'motor', 'BrotherHobby Tornado 3115 900kv + Props HQ MacroQuad Prop 10x5x3', 110, [10], '/images/4 - motor 10 inches 3115+10x5x3.png'),
 
-  new Detail(7, 'battery', '6s2p 8000mAh', 60, [7, 10], 'assets/images/5 - battery 6s2p.png'),
-  new Detail(8, 'battery', '6s3p 12000mAh', 90, [7, 10], 'assets/images/6 - battery 6s3p.png'),
+  new Detail(7, 'battery', '6s2p 8000mAh', 60, [7, 10], '/images/5 - battery 6s2p.png'),
+  new Detail(8, 'battery', '6s3p 12000mAh', 90, [7, 10], '/images/6 - battery 6s3p.png'),
 
-  new Detail(9, 'flight-controller', 'SpeedyBee V4 55A', 50, [7, 10], 'assets/images/7 - controller.png'),
-  new Detail(10, 'flight-controller', 'Mamba F405 MK2', 70, [7, 10], 'assets/images/7 - controller.png'),
+  new Detail(9, 'flight-controller', 'SpeedyBee V4 55A', 50, [7, 10], '/images/7 - controller.png'),
+  new Detail(10, 'flight-controller', 'Mamba F405 MK2', 70, [7, 10], '/images/7 - controller.png'),
 
-  new Detail(11, 'camera', 'Caddx Ratel Pro', 30, [7, 10], 'assets/images/8 -camera.png'),
-  new Detail(12, 'camera', 'Foxeer Night Cat 3', 40, [7, 10], 'assets/images/8 -camera.png'),
+  new Detail(11, 'camera', 'Caddx Ratel Pro', 30, [7, 10], '/images/8 -camera.png'),
+  new Detail(12, 'camera', 'Foxeer Night Cat 3', 40, [7, 10], '/images/8 -camera.png'),
 
-  new Detail(13, 'video-antenna', 'Rush Cherry 2', 10, [7, 10], 'assets/images/9 -video antenna.png'),
-  new Detail(14, 'video-antenna', 'SkyZone MushRoom', 8, [7, 10], 'assets/images/9 -video antenna.png'),
+  new Detail(13, 'video-antenna', 'Rush Cherry 2', 10, [7, 10], '/images/9 -video antenna.png'),
+  new Detail(14, 'video-antenna', 'SkyZone MushRoom', 8, [7, 10], '/images/9 -video antenna.png'),
 
-  new Detail(15, 'radio-module', 'Bayck ELRS 915mhz', 10, [7, 10], 'assets/images/10 - radio module.png'),
-  new Detail(16, 'radio-module', 'HappyModel RX 915mhz', 15, [7, 10], 'assets/images/10 - radio module.png'),
+  new Detail(15, 'radio-module', 'Bayck ELRS 915mhz', 10, [7, 10], '/images/10 - radio module.png'),
+  new Detail(16, 'radio-module', 'HappyModel RX 915mhz', 15, [7, 10], '/images/10 - radio module.png'),
 ];
 
 /**
