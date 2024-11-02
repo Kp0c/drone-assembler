@@ -2,6 +2,15 @@
 
 /**
  * Detail
+ * @typedef {Object} ConnectionPoint
+ * @property {'motor' | 'battery' | 'fligh-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
+ * @property {number} x
+ * @property {number} y
+ * @property {Detail} installedPart
+ */
+
+/**
+ * Detail
  * @typedef {Object} Detail
  * @property {'frame' | 'motor' | 'battery' | 'fligh-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
  * @property {string} name
@@ -24,7 +33,7 @@ export class Detail {
    * @returns {boolean}
    */
   isFrame() {
-    return this.type === 'frame';
+    return false;
   }
 
   /**
@@ -61,5 +70,29 @@ export class Detail {
         return `You can only have 1 ${ sectionTypeToName[this.type] }`;
       }
     }
+  }
+}
+
+export class Frame extends Detail {
+  /**
+   * @param {string} name
+   * @param {number} price
+   * @param {number[]} compatibilityInch
+   * @param {string} img
+   * @param {ConnectionPoint[]} connectionPoints
+   */
+  constructor(name, price, compatibilityInch, img, connectionPoints) {
+    super('frame', name, price, compatibilityInch, img);
+
+    this.connectionPoints = connectionPoints;
+  }
+
+  /**
+   * Check if the detail is a frame
+   *
+   * @returns {boolean}
+   */
+  isFrame() {
+    return true;
   }
 }

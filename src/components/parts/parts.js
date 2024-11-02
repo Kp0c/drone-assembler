@@ -1,7 +1,7 @@
 import template from './parts.html?raw';
 import styles from './parts.css?inline'
 import { BaseComponent } from '../base-component.js';
-import { allParts$, selectedFrame$, selectedParts$ } from '../../services/state.service.js';
+import { allParts$, dragStart, selectedFrame$, selectedParts$, stopDrag } from '../../services/state.service.js';
 import { sectionTypeToName } from '../../helpers/maps.js';
 
 export class Parts extends BaseComponent {
@@ -61,6 +61,16 @@ export class Parts extends BaseComponent {
       }
 
       event.dataTransfer.setData('text/plain', name);
+
+      dragStart(name);
+    }, {
+      signal: this.destroyedSignal
+    });
+
+    this.#sectionsWrapper.addEventListener('dragend', (event) => {
+      event.preventDefault();
+
+      stopDrag();
     });
   }
 

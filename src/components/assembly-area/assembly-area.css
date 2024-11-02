@@ -48,7 +48,25 @@
 }
 
 .working-area {
+  position: relative;
+
   &[hidden] {
     display: none;
   }
+}
+
+.connection-point {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: green;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 20px 20px rgba(0, 128, 0, 0.7)
+}
+
+.installed-part {
+  position: absolute;
+  width: 250px;
+  aspect-ratio: 1 / 1;
 }

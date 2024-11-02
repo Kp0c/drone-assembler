@@ -1,13 +1,23 @@
 ﻿import { Observable } from '../helpers/observable';
-import { Detail } from '../models/detail';
+import { Detail, Frame } from '../models/detail';
 
 
 /**
  * @type {Detail[]}
  */
 const allDetails = [
-  new Detail('frame', 'Mark 4 7"', 12, [7], 'assets/images/1 - frame 7 inches Mark_4.png'),
-  new Detail('frame', 'Mark 4 v2 10"', 20, [10], 'assets/images/2 - frame 10 inches Mark_4-v2.png'),
+  new Frame('Mark 4 7"', 12, [7], 'assets/images/1 - frame 7 inches Mark_4.png', [
+    { type: 'motor', x: 219, y: 329 },
+    { type: 'motor', x: 1824, y: 329 },
+    { type: 'motor', x: 219, y: 1706 },
+    { type: 'motor', x: 1824, y: 1706 },
+  ]),
+  new Frame('Mark 4 v2 10"', 20, [10], 'assets/images/2 - frame 10 inches Mark_4-v2.png', [
+    { type: 'motor', x: 149, y: 308 },
+    { type: 'motor', x: 1882, y: 308 },
+    { type: 'motor', x: 149, y: 1768 },
+    { type: 'motor', x: 1882, y: 1768 },
+  ]),
 
   new Detail('motor', 'FlashHobby 2807 1300kv + Props HQProp 7x4x3', 55, [7], 'assets/images/3 - motor 7 inches 2807 1300kv+7x4x3.png'),
   new Detail('motor', 'EMAX 2807 1300kv + Props HQProp 7x4x3', 45, [7], 'assets/images/3 - motor 7 inches 2807 1300kv+7x4x3.png'),
@@ -33,7 +43,7 @@ const allDetails = [
 /**
  * Available frames
  *
- * @type {Observable<Detail[]>}
+ * @type {Observable<Frame[]>}
  */
 export const frames$ = new Observable(allDetails.filter(detail => detail.isFrame()));
 
@@ -46,7 +56,7 @@ export const allParts$ = new Observable(allDetails.filter(detail => !detail.isFr
 
 /**
  * Is a frame selected
- * @type {Observable<Detail>}
+ * @type {Observable<Frame>}
  */
 export const selectedFrame$ = new Observable(null);
 
@@ -57,19 +67,47 @@ export const selectedFrame$ = new Observable(null);
 export const selectedParts$ = new Observable([]);
 
 /**
+ * Current drag item
+ * @type {Observable<Detail>}
+ */
+export const currentDragItem$ = new Observable(null);
+
+/**
  * Select a frame and trigger the allParts$ observable with the compatible details
  * @param {string} frameName
  */
 export function selectFrame(frameName) {
-  const frame = allDetails.find(detail => detail.isFrame() && detail.name === frameName);
+  const frame = getDetailByName(frameName);
 
   selectedFrame$.next(frame);
 }
 
-export function selectPart(partName) {
-  const part = allDetails.find(detail => !detail.isFrame() && detail.name === partName);
+/**
+ * Select a part
+ * @param {string} partName
+ * @param {ConnectionPoint} connectionPoint
+ */
+export function selectPart(partName, connectionPoint) {
+  const part = getDetailByName(partName);
 
   selectedParts$.next([...selectedParts$.getLatestValue(), part]);
+
+  const frame = selectedFrame$.getLatestValue();
+  frame.connectionPoints.find(p => p.x === connectionPoint.x && p.y === connectionPoint.y).installedPart = part;
+
+  selectedFrame$.next(frame);
+}
+
+export function getDetailByName(name) {
+  return allDetails.find(detail => detail.name === name);
+}
+
+export function dragStart(name) {
+  currentDragItem$.next(allDetails.find(detail => detail.name === name));
+}
+
+export function stopDrag() {
+  currentDragItem$.next(null);
 }
 
 selectedFrame$.next(allDetails.find(detail => detail.isFrame()));

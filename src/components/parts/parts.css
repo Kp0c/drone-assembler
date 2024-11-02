@@ -19,3 +19,7 @@
     margin: 24px 0 0;
   }
 }
+
+.part {
+  cursor: grab;
+}
