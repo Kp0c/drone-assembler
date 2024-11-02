@@ -54,7 +54,7 @@ export class Detail {
   /**
    * Check if the detail is compatible with other parts
    * @param {Detail[]} parts
-   * @returns {string}
+   * @returns {string | null} error message or null when compatible
    */
   checkCompatibilityWithOtherParts(parts) {
     if (this.type === 'motor') {
@@ -75,6 +75,8 @@ export class Detail {
         return `You can only have 1 ${ sectionTypeToName[this.type] }`;
       }
     }
+
+    return null;
   }
 
   /**
