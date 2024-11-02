@@ -12,6 +12,10 @@
   }
 }
 
+.history {
+  padding: 16px;
+}
+
 .frames-selector {
   display: flex;
   flex-direction: row;

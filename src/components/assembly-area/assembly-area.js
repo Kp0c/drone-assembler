@@ -3,11 +3,14 @@ import styles from './assembly-area.css?inline'
 import { BaseComponent } from '../base-component.js';
 import { Detail } from '../../models/detail.js';
 import { currentDragItem$, frames$, getDetailById, selectedFrame$, selectFrame, selectPart, stopDrag } from '../../services/state.service.js';
+import { canRedo$, canUndo$, redo, undo } from '../../services/history.service.js';
 
 export class AssemblyArea extends BaseComponent {
   #frames = this.shadowRoot.getElementById('frames');
   #framesWrapper = this.shadowRoot.getElementById('frames-wrapper');
   #frameTemplate = this.shadowRoot.getElementById('frame-template');
+  #undo = this.shadowRoot.getElementById('undo');
+  #redo = this.shadowRoot.getElementById('redo');
 
   /**
    * @type {HTMLImageElement}
@@ -76,6 +79,32 @@ export class AssemblyArea extends BaseComponent {
     }, {
       pushLatestValue: true,
       signal: this.destroyedSignal.signal
+    });
+
+    canUndo$.subscribe((canUndo) => {
+      this.#undo.disabled = !canUndo;
+    }, {
+      pushLatestValue: true,
+      signal: this.destroyedSignal.signal
+    });
+
+    this.#undo.addEventListener('click', () => {
+      undo();
+    }, {
+      signal: this.destroyedSignal
+    });
+
+    canRedo$.subscribe((canRedo) => {
+      this.#redo.disabled = !canRedo;
+    }, {
+      pushLatestValue: true,
+      signal: this.destroyedSignal.signal
+    });
+
+    this.#redo.addEventListener('click', () => {
+      redo();
+    }, {
+      signal: this.destroyedSignal
     });
   }
 

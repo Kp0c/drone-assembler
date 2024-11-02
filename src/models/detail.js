@@ -1,4 +1,4 @@
-﻿import { generateUniqueId, sectionTypeToName } from '../helpers/utilities.js';
+﻿import { sectionTypeToName } from '../helpers/utilities.js';
 
 /**
  * Detail
@@ -15,6 +15,7 @@
 /**
  * Detail
  * @typedef {Object} Detail
+ * @property {number} id
  * @property {'frame' | 'motor' | 'battery' | 'flight-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
  * @property {string} name
  * @property {number} price
@@ -22,8 +23,8 @@
  * @property {string} img
  */
 export class Detail {
-  constructor(type, name, price, compatibilityInch, img) {
-    this.id = generateUniqueId();
+  constructor(id, type, name, price, compatibilityInch, img) {
+    this.id = id;
     this.type = type;
     this.name = name;
     this.price = price;
@@ -75,18 +76,27 @@ export class Detail {
       }
     }
   }
+
+  /**
+   * 'Copy' the detail
+   * @returns {Detail}
+   */
+  copy() {
+    return new Detail(this.id, this.type, this.name, this.price, this.compatibilityInch, this.img);
+  }
 }
 
 export class Frame extends Detail {
   /**
+   * @param {number} id
    * @param {string} name
    * @param {number} price
    * @param {number[]} compatibilityInch
    * @param {string} img
    * @param {ConnectionPoint[]} connectionPoints
    */
-  constructor(name, price, compatibilityInch, img, connectionPoints) {
-    super('frame', name, price, compatibilityInch, img);
+  constructor(id, name, price, compatibilityInch, img, connectionPoints) {
+    super(id, 'frame', name, price, compatibilityInch, img);
 
     this.connectionPoints = connectionPoints;
   }
@@ -98,5 +108,18 @@ export class Frame extends Detail {
    */
   isFrame() {
     return true;
+  }
+
+  /**
+   * 'Copy' the frame
+   * @returns {Frame}
+   */
+  copy() {
+    return new Frame(this.id, this.name, this.price, this.compatibilityInch, this.img, this.connectionPoints.map(point => {
+      return {
+        ...point,
+        installedPart: point.installedPart ? point.installedPart.copy() : null
+      };
+    }));
   }
 }
