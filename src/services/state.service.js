@@ -101,11 +101,9 @@ export function selectPart(partName, connectionPoint) {
   const part = getDetailByName(partName);
 
   selectedParts$.next([...selectedParts$.getLatestValue(), part]);
+  connectionPoint.installedPart = part;
 
-  const frame = selectedFrame$.getLatestValue();
-  frame.connectionPoints.find(p => p.x === connectionPoint.x && p.y === connectionPoint.y).installedPart = part;
-
-  selectedFrame$.next(frame);
+  selectedFrame$.reemit();
 }
 
 export function getDetailByName(name) {

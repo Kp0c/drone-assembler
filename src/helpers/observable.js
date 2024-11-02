@@ -84,4 +84,11 @@ export class Observable {
   getLatestValue() {
     return this.#latestValue;
   }
+
+  /**
+   * Re-emit the latest value to all observers.
+   */
+  reemit() {
+    this.#observers.forEach((observer) => observer(this.#latestValue));
+  }
 }
