@@ -48,7 +48,7 @@ export const allParts$ = new Observable(allDetails.filter(detail => !detail.isFr
  * Is a frame selected
  * @type {Observable<boolean>}
  */
-export const selectedFrame$ = new Observable(false);
+export const selectedFrame$ = new Observable(null);
 
 /**
  * Select a frame and trigger the allParts$ observable with the compatible details

@@ -9,6 +9,12 @@ export class AssemblyArea extends BaseComponent {
   #framesWrapper = this.shadowRoot.getElementById('frames-wrapper');
   #frameTemplate = this.shadowRoot.getElementById('frame-template');
 
+  /**
+   *
+   * @type {HTMLImageElement}
+   */
+  #workingArea = this.shadowRoot.getElementById('working-area');
+
   constructor() {
     super(template, styles);
 
@@ -29,6 +35,8 @@ export class AssemblyArea extends BaseComponent {
 
     selectedFrame$.subscribe((frame) => {
       this.#framesWrapper.hidden = !!frame;
+      this.#workingArea.parentElement.hidden = !frame;
+      this.#workingArea.src = frame?.img;
     }, {
       pushLatestValue: true,
       signal: this.destroyedSignal.signal

@@ -24,74 +24,10 @@ For tests it is using [Vitest](https://vitest.dev/) that is using [WebdriverIO](
     - `common` - styles that are common for the app and most likely needed in most/all components
 - `main.js` - file defines all components
 
-## TODO
-### **Priority 1: Foundation Setup**
-1. **Drag-and-Drop Functionality**
-    - [ ] Set up draggable elements in Parts Panel and droppable Assembly Area.
-    - [ ] Implement part placement on drop.
-
-2. **Cost Calculation (Real-time)**
-    - [ ] Add cost display in UI.
-    - [ ] Update cost when parts are added/removed.
-
-3. **Completeness Verification**
-    - [ ] Add "Complete" indicator in UI.
-    - [ ] Track and validate required parts for completeness.
-
----
-
-### **Priority 2: Usability Features**
-4. **Clear All Button**
-    - [ ] Create "Clear All" button in UI.
-    - [ ] Remove all parts from Assembly Area and reset variables.
-
-5. **Connection Points Indication**
-    - [ ] Add visual connection points on frame for compatible parts.
-    - [ ] Highlight points when a part is nearby.
-
-6. **Compatibility Visual Indication**
-    - [ ] Define compatibility rules for parts.
-    - [ ] Display feedback or error for incompatible parts.
-
-7. **Export to JSON or CSV**
-    - [ ] Create "Export" button.
-    - [ ] Export assembly data to JSON or CSV format.
-
----
-
-### **Priority 3: Advanced Editing & Interactivity**
-8. **Assembly Editing (Replace Parts)**
-    - [ ] Add option to select/remove parts.
-    - [ ] Restrict frame removal if other parts are attached.
-
-9. **Interactive Visualization (Zoom/Pan)**
-    - [ ] Add zoom/pan controls in Assembly Area (0.5x - 3x).
-    - [ ] Ensure smooth zooming and panning.
-
----
-
-### **Priority 4: Budget & Configuration Management**
-10. **Extended Cost Calculation**
-- [ ] Add "Maximum Cost" field in UI.
-- [ ] Prevent parts that exceed budget limit.
-
-11. **Configuration Saving & Import**
-- [ ] Add "Save" and "Import" buttons.
-- [ ] Implement save/load configuration in JSON.
-
----
-
-### **Finalization Tasks**
-1. **UI Polish & Error Handling**
-    - [ ] Ensure clear UI, error messages, and labels.
-
-2. **Cross-Browser Testing**
-    - [ ] Test on latest Google Chrome.
-
-3. **Packaging for Submission**
-    - [ ] Zip files under 10 MB, with correct naming and no personal identifiers.
-
 ## Available functionality
+- frame selection
+- parts selection with frame check
+- show the selected frame
 
 ## How to run
 1. Clone the repo

@@ -46,3 +46,9 @@
     }
   }
 }
+
+.working-area {
+  &[hidden] {
+    display: none;
+  }
+}

@@ -12,6 +12,12 @@ h3, h4 {
   margin: 0;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 button.primary {
   padding: 12px 24px;
   font-size: 16px;
