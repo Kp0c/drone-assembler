@@ -1,17 +1,15 @@
-import template from './parts.html?raw';
-import styles from './parts.css?inline'
+import template from './cart.html?raw';
+import styles from './cart.css?inline'
 import { BaseComponent } from '../base-component.js';
-import { allParts$, dragStart, selectedFrame$, stopDrag } from '../../services/state.service.js';
+import { clearAll, selectedFrame$, uninstallItem } from '../../services/state.service.js';
 import { sectionTypeToName } from '../../helpers/utilities.js';
 
-export class Parts extends BaseComponent {
+export class Cart extends BaseComponent {
   #sectionsWrapper = this.shadowRoot.getElementById('sections-wrapper');
   #partTemplate = this.shadowRoot.getElementById('part-template');
+  #totalPrice = this.shadowRoot.getElementById('total-price');
+  #clearAll = this.shadowRoot.getElementById('clear-all');
 
-  /**
-   * @type {Detail[]}
-   */
-  #parts = [];
 
   /**
    * Selected frame
@@ -22,41 +20,30 @@ export class Parts extends BaseComponent {
   constructor() {
     super(template, styles);
 
-    allParts$.subscribe((parts) => {
-      this.#parts = parts;
-      this.#renderParts();
-    }, {
-      pushLatestValue: true,
-      signal: this.destroyedSignal.signal
-    });
-
     selectedFrame$.subscribe((frame) => {
       this.#selectedFrame = frame;
       this.#renderParts();
+      this.#renderPrice();
     }, {
       pushLatestValue: true,
       signal: this.destroyedSignal.signal
     });
 
-    this.#sectionsWrapper.addEventListener('dragstart', (event) => {
+    this.#sectionsWrapper.addEventListener('click', (event) => {
       const target = event.target.closest('.part');
       const id = target?.dataset.id;
 
-      if (!id) {
-        console.error('No id found');
+      if (id) {
+        uninstallItem(parseInt(id));
       }
-
-      event.dataTransfer.setData('text/plain', id);
-
-      dragStart(+id);
     }, {
       signal: this.destroyedSignal
     });
 
-    this.#sectionsWrapper.addEventListener('dragend', (event) => {
-      event.preventDefault();
-
-      stopDrag();
+    this.#clearAll.addEventListener('click', () => {
+      clearAll();
+    }, {
+      signal: this.destroyedSignal
     });
   }
 
@@ -64,14 +51,19 @@ export class Parts extends BaseComponent {
    * Render the parts sections
    */
   #renderParts() {
-    if (!this.#selectedFrame || !this.#parts.length) {
+    this.#sectionsWrapper.innerHTML = '';
+
+    if (!this.#selectedFrame) {
       return;
     }
 
-    this.#sectionsWrapper.innerHTML = '';
+    let allInstalledParts = this.#selectedFrame.connectionPoints.filter((p) => p.installedPart)
+      .map((p) => p.installedPart);
+
+    allInstalledParts = [this.#selectedFrame, ...allInstalledParts];
 
     // group by type
-    const groupedParts = this.#parts.reduce((acc, part) => {
+    const groupedParts = allInstalledParts.reduce((acc, part) => {
       if (!acc[part.type]) {
         acc[part.type] = [];
       }
@@ -80,8 +72,6 @@ export class Parts extends BaseComponent {
 
       return acc;
     }, {});
-
-    const installedParts = this.#selectedFrame.connectionPoints.filter((p) => p.installedPart).map((p) => p.installedPart);
 
     Object.entries(groupedParts).forEach(([type, parts]) => {
       const section = document.createElement('section');
@@ -99,27 +89,31 @@ export class Parts extends BaseComponent {
         partElement.querySelector('#img').src = part.img;
         partElement.querySelector('#img').alt = part.name;
 
-        let error = part.checkCompatibilityWithOtherParts(installedParts);
+        partElement.dataset.id = part.id;
 
-        if (!part.isCompatibleWith(this.#selectedFrame.compatibilityInch[0])) {
-          error = `Not compatible with ${this.#selectedFrame.name} frame`;
-        }
-
-        if (error) {
-          partElement.querySelector('#error').hidden = false
-          partElement.querySelector('#error').textContent = error;
-
-          partElement.draggable = false;
+        if (part.isFrame() && allInstalledParts.length > 1) {
+          partElement.querySelector('#delete').hidden = true;
+          partElement.querySelector('#error').hidden = false;
         } else {
           partElement.querySelector('#error').hidden = true;
         }
-
-        partElement.dataset.id = part.id;
 
         section.appendChild(partElement);
       });
 
       this.#sectionsWrapper.appendChild(section);
     });
+  }
+
+  #renderPrice() {
+    const price = this.#selectedFrame?.connectionPoints.reduce((acc, p) => {
+      if (p.installedPart) {
+        acc += p.installedPart.price;
+      }
+
+      return acc;
+    }, this.#selectedFrame?.price ?? 0) ?? 0;
+
+    this.#totalPrice.textContent = price.toString();
   }
 }

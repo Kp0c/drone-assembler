@@ -70,12 +70,6 @@ export const allParts$ = new Observable(allDetails.filter(detail => !detail.isFr
  */
 export const selectedFrame$ = new Observable(null);
 
-/**'
- * Selected parts
- * @type {Observable<Detail[]>}
- */
-export const selectedParts$ = new Observable([]);
-
 /**
  * Current drag item
  * @type {Observable<Detail>}
@@ -84,39 +78,96 @@ export const currentDragItem$ = new Observable(null);
 
 /**
  * Select a frame and trigger the allParts$ observable with the compatible details
- * @param {string} frameName
+ * @param {number} id
  */
-export function selectFrame(frameName) {
-  const frame = getDetailByName(frameName);
+export function selectFrame(id) {
+  const frame = getDetailById(id);
 
   selectedFrame$.next(frame);
 }
 
 /**
  * Select a part
- * @param {string} partName
+ * @param {number} id
  * @param {ConnectionPoint} connectionPoint
  */
-export function selectPart(partName, connectionPoint) {
-  const part = getDetailByName(partName);
-
-  selectedParts$.next([...selectedParts$.getLatestValue(), part]);
-  connectionPoint.installedPart = part;
+export function selectPart(id, connectionPoint) {
+  connectionPoint.installedPart = getDetailById(id);
 
   selectedFrame$.reemit();
 }
 
-export function getDetailByName(name) {
-  return allDetails.find(detail => detail.name === name);
+export function getDetailById(id) {
+  return allDetails.find(detail => detail.id === id);
 }
 
-export function dragStart(name) {
-  currentDragItem$.next(allDetails.find(detail => detail.name === name));
+export function dragStart(id) {
+  currentDragItem$.next(getDetailById(id));
 }
 
 export function stopDrag() {
   currentDragItem$.next(null);
 }
 
-selectedFrame$.next(allDetails.find(detail => detail.isFrame()));
+/**
+ * Uninstall a part
+ * @param {number} id
+ */
+export function uninstallItem(id) {
+  const frame = selectedFrame$.getLatestValue();
+
+  if (frame.id === id) {
+    selectedFrame$.next(null);
+  } else {
+    const connectionPoint = frame.connectionPoints.find(p => p.installedPart?.id === id);
+    connectionPoint.installedPart = null;
+
+    selectedFrame$.reemit();
+  }
+
+}
+
+/**
+ * Clear all parts
+ */
+export function clearAll() {
+  const frame = selectedFrame$.getLatestValue();
+  frame.connectionPoints.forEach(p => p.installedPart = null);
+
+  selectedFrame$.next(null);
+}
+
+/**
+ *
+ * @type {Frame}
+ */
+const frame = allDetails.filter(detail => detail.isFrame())[1];
+frame.connectionPoints.forEach((p) => {
+  switch (p.type) {
+    case 'motor':
+      p.installedPart = allDetails.find(detail => detail.type === 'motor' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'battery':
+      p.installedPart = allDetails.find(detail => detail.type === 'battery' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'flight-controller':
+      p.installedPart = allDetails.find(detail => detail.type === 'flight-controller' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'camera':
+      p.installedPart = allDetails.find(detail => detail.type === 'camera' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'video-antenna':
+      p.installedPart = allDetails.find(detail => detail.type === 'video-antenna' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+    case 'radio-module':
+      p.installedPart = allDetails.find(detail => detail.type === 'radio-module' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
+      break;
+  }
+});
+
+selectedFrame$.next(frame);
+setTimeout(() => {
+  selectedFrame$.next(frame);
+}, 50);
 allParts$.next(allDetails.filter(detail => !detail.isFrame()));
+

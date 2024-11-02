@@ -1,8 +1,9 @@
-﻿import { sectionTypeToName } from '../helpers/maps.js';
+﻿import { generateUniqueId, sectionTypeToName } from '../helpers/utilities.js';
 
 /**
  * Detail
  * @typedef {Object} ConnectionPoint
+ * @property {number} id
  * @property {'motor' | 'battery' | 'flight-controller' | 'camera' | 'video-antenna' | 'radio-module'} type
  * @property {number} x
  * @property {number} y
@@ -22,6 +23,7 @@
  */
 export class Detail {
   constructor(type, name, price, compatibilityInch, img) {
+    this.id = generateUniqueId();
     this.type = type;
     this.name = name;
     this.price = price;

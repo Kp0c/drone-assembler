@@ -2,7 +2,7 @@ import template from './assembly-area.html?raw';
 import styles from './assembly-area.css?inline'
 import { BaseComponent } from '../base-component.js';
 import { Detail } from '../../models/detail.js';
-import { currentDragItem$, frames$, getDetailByName, selectedFrame$, selectFrame, selectPart, stopDrag } from '../../services/state.service.js';
+import { currentDragItem$, frames$, getDetailById, selectedFrame$, selectFrame, selectPart, stopDrag } from '../../services/state.service.js';
 
 export class AssemblyArea extends BaseComponent {
   #frames = this.shadowRoot.getElementById('frames');
@@ -24,9 +24,9 @@ export class AssemblyArea extends BaseComponent {
 
     this.#frames.addEventListener('click', (event) => {
       if (event.target.id.startsWith('select-')) {
-        const frameName = event.target.id.replace('select-', '');
+        const id = +event.target.id.replace('select-', '');
 
-        selectFrame(frameName);
+        selectFrame(id);
       }
     }, {
       signal: this.destroyedSignal
@@ -54,13 +54,12 @@ export class AssemblyArea extends BaseComponent {
 
     this.#workingArea.addEventListener('drop', (event) => {
       event.preventDefault();
-      const name = event.dataTransfer.getData('text/plain');
-      const detail = getDetailByName(name);
+      const id = +event.dataTransfer.getData('text/plain');
+      const detail = getDetailById(id);
       const closestPoint = this.#findClosesConnectionPoint(detail.type, event.offsetX, event.offsetY);
 
-      selectPart(name, closestPoint);
+      selectPart(id, closestPoint);
       stopDrag();
-
     }, {
       signal: this.destroyedSignal
     });
@@ -102,7 +101,7 @@ export class AssemblyArea extends BaseComponent {
       frameElement.querySelector('#frame-name').textContent = frame.name + ` ($${frame.price})`;
       frameElement.querySelector('#frame-img').src = frame.img;
       frameElement.querySelector('#frame-img').alt = frame.name;
-      frameElement.querySelector('#frame-select').id = `select-${frame.name}`;
+      frameElement.querySelector('#frame-select').id = `select-${frame.id}`;
 
       this.#frames.appendChild(frameElement);
     });
@@ -195,8 +194,6 @@ export class AssemblyArea extends BaseComponent {
 
     const sortedPoints = this.#currentFrame.connectionPoints.sort((a, b) => a.zIndex - b.zIndex);
     const installedParts = sortedPoints.filter(p => p.installedPart);
-
-    console.log({installedParts});
 
     const multipliers = this.#getImageMultipliers();
     installedParts.forEach((point) => {

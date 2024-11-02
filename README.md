@@ -14,9 +14,10 @@ For tests it is using [Vitest](https://vitest.dev/) that is using [WebdriverIO](
     - The `da-app` component is the main component containing the whole app.
     - The `da-assembly-area` represents the assembly area where you drop parts.
     - The `da-parts` represents the parts panel where you can drag parts from.
+    - The `da-cart` represents the cart where you can see the selected parts.
 - `helpers` - Helper classes
-    - 'observable' - Observable implementation to add reactivity to the app
-    - `maps` - utility maps
+    - `observable` - Observable implementation to add reactivity to the app
+    - `utilities` - utilities
 - `models` - Models
   - `detail` - Detail model
 - `services` - Services
@@ -29,6 +30,17 @@ For tests it is using [Vitest](https://vitest.dev/) that is using [WebdriverIO](
 - frame selection
 - parts selection with frame check
 - show the selected frame
+- drag & drop parts to the assembly area
+- show where the part is going to be installed
+- install part to the closes point
+- visually show the installed part
+
+## Improvements in case if I have more time
+- [ ] move drone to the center of the screen
+- [ ] fix a defect on bigger screens
+- [ ] fix duplicated parts of cart and parts components
+- [ ] Extract part into a separate component
+- [ ] Add tests for the components
 
 ## How to run
 1. Clone the repo

@@ -52,17 +52,19 @@ button.primary {
 .part {
   border: 1px solid gray;
   border-radius: 8px;
+  background-color: white;
   padding: 8px;
   width: 250px;
   height: 250px;
   display: flex;
   flex-direction: column;
+  z-index: 1;
 
   &.incompatible {
     border-color: red;
   }
 
-  & h3 {
+  > h3 {
     margin: 0;
     padding: 0;
     font-size: 1.2em;

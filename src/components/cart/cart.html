@@ -1,0 +1,22 @@
+<div class="cart-container">
+  <div class="total">
+    <h2>Total: $<span id="total-price">0</span></h2>
+    <button id="clear-all" class="primary">Clear cart</button>
+  </div>
+  <div id="sections-wrapper" class="sections-wrapper">
+  </div>
+</div>
+
+<template id="part-template">
+  <div class="part" draggable="true">
+    <h3 id="name" class="name">Part name</h3>
+    <div class="img-wrapper">
+      <img id="img" src="assets/images/5 - battery 6s2p.png" alt="img" draggable="false">
+    </div>
+
+    <button id="delete" class="primary">Delete part</button>
+    <div id="error" class="inline-alert red">
+      Please uninstall everything else before deleting the frame
+    </div>
+  </div>
+</template>
