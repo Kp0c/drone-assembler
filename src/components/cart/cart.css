@@ -24,3 +24,36 @@
     margin: 24px 0 0;
   }
 }
+
+.progress {
+  display: flex;
+  margin: 8px 16px 16px;
+  height: 1.5em;
+
+  & > span {
+    color: white;
+    padding: 4px 8px;
+    text-align: center;
+    font-weight: bold;
+
+    --border-radius: 6px;
+
+    &:first-child {
+      border-top-left-radius: var(--border-radius);
+      border-bottom-left-radius: var(--border-radius);
+    }
+
+    &:last-child {
+      border-top-right-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
+    }
+  }
+
+  & #done {
+    background-color: rgb(118, 185, 71);
+  }
+
+  & #needed {
+    background-color: rgb(176, 190, 197);
+  }
+}

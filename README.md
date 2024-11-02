@@ -34,6 +34,10 @@ For tests it is using [Vitest](https://vitest.dev/) that is using [WebdriverIO](
 - show where the part is going to be installed
 - install part to the closes point
 - visually show the installed part
+- calculate the cost
+- allow to edit assembly
+- allow to clear all
+- show the progress of the assembly
 
 ## Improvements in case if I have more time
 - [ ] move drone to the center of the screen

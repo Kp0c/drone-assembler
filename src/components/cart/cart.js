@@ -9,7 +9,7 @@ export class Cart extends BaseComponent {
   #partTemplate = this.shadowRoot.getElementById('part-template');
   #totalPrice = this.shadowRoot.getElementById('total-price');
   #clearAll = this.shadowRoot.getElementById('clear-all');
-
+  #progress = this.shadowRoot.getElementById('progress');
 
   /**
    * Selected frame
@@ -24,6 +24,7 @@ export class Cart extends BaseComponent {
       this.#selectedFrame = frame;
       this.#renderParts();
       this.#renderPrice();
+      this.#renderProgress();
     }, {
       pushLatestValue: true,
       signal: this.destroyedSignal.signal
@@ -115,5 +116,29 @@ export class Cart extends BaseComponent {
     }, this.#selectedFrame?.price ?? 0) ?? 0;
 
     this.#totalPrice.textContent = price.toString();
+  }
+
+  #renderProgress() {
+    const installedParts = this.#selectedFrame?.connectionPoints.filter((p) => p.installedPart).length ?? 0;
+    const totalParts = this.#selectedFrame?.connectionPoints.length ?? 0;
+    const neededParts = totalParts - installedParts;
+
+    this.#progress.innerHTML = '';
+    if (installedParts > 0) {
+      const doneElement = document.createElement('span');
+      doneElement.id = 'done';
+      doneElement.style.flex = installedParts.toString();
+      doneElement.textContent = installedParts.toString();
+      this.#progress.appendChild(doneElement);
+    }
+
+    if (neededParts > 0) {
+      const neededElement = document.createElement('span');
+      neededElement.id = 'needed';
+      neededElement.style.flex = neededParts.toString();
+      neededElement.textContent = neededParts.toString();
+      this.#progress.appendChild(neededElement);
+    }
+
   }
 }
