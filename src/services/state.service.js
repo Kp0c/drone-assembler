@@ -204,39 +204,3 @@ selectedFrame$.subscribe((frame) => {
 
   currentPrice$.next(price);
 });
-
-
-/**
- *
- * @type {Frame}
- */
-const frame = allDetails.filter(detail => detail.isFrame())[1].copy();
-frame.connectionPoints.forEach((p) => {
-  switch (p.type) {
-    case 'motor':
-      p.installedPart = allDetails.find(detail => detail.type === 'motor' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-      break;
-    case 'battery':
-      p.installedPart = allDetails.find(detail => detail.type === 'battery' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-      break;
-    case 'flight-controller':
-      p.installedPart = allDetails.find(detail => detail.type === 'flight-controller' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-      break;
-    case 'camera':
-      p.installedPart = allDetails.find(detail => detail.type === 'camera' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-      break;
-    case 'video-antenna':
-      p.installedPart = allDetails.find(detail => detail.type === 'video-antenna' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-      break;
-    case 'radio-module':
-      p.installedPart = allDetails.find(detail => detail.type === 'radio-module' && detail.compatibilityInch.includes(frame.compatibilityInch[0]));
-      break;
-  }
-});
-
-selectedFrame$.next(frame);
-setTimeout(() => {
-  selectedFrame$.next(frame);
-}, 50);
-allParts$.next(allDetails.filter(detail => !detail.isFrame()));
-
