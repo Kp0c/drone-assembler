@@ -156,7 +156,7 @@ export class Cart extends BaseComponent {
       this.#progress.appendChild(neededElement);
     }
 
-    if (neededParts > 0) {
+    if (neededParts > 0 || totalParts === 0) {
       this.#exportActions.hidden = true;
       this.#exportError.hidden = false;
     } else {
@@ -182,9 +182,10 @@ export class Cart extends BaseComponent {
 
     // headers
     data.unshift({
+      id: 'ID',
+      positionId: 'Position ID',
       type: 'Type',
       name: 'Name',
-      quantity: 'Quantity',
       price: 'Price',
       compatibilityInch: 'Compatibility Inch',
     });
@@ -205,27 +206,15 @@ export class Cart extends BaseComponent {
   #exportData() {
     const parts = [this.#selectedFrame, ...this.#selectedFrame.connectionPoints
       .filter((p) => p.installedPart)
-      .map((p) => p.installedPart)];
+      .map((p) => ({ ...p.installedPart, positionId: p.id }))];
 
-    const groupedParts = parts.reduce((acc, part) => {
-      if (!acc[part.type]) {
-        acc[part.type] = [];
-      }
-
-      acc[part.type].push(part);
-
-      return acc;
-    }, {});
-
-    return Object.entries(groupedParts).map(([type, parts]) => {
-      const part = parts[0];
-      return {
-        type: part.type,
-        name: part.name,
-        quantity: parts.length,
-        price: parts.reduce((acc, p) => acc + p.price, 0),
-        compatibilityInch: part.compatibilityInch,
-      };
-    });
+    return parts.map((part) => ({
+      id: part.id,
+      positionId: part.positionId,
+      type: sectionTypeToName[part.type],
+      name: part.name,
+      price: part.price,
+      compatibilityInch: part.compatibilityInch.join(';'),
+    }));
   }
 }

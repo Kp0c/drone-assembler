@@ -133,13 +133,47 @@ export function uninstallItem(id) {
  * Clear all parts
  */
 export function clearAll() {
-  const frame = selectedFrame$.getLatestValue();
+  const frame = selectedFrame$.getLatestValue()?.copy();
+
+  if (!frame) {
+    return;
+  }
+
   frame.connectionPoints.forEach(p => p.installedPart = null);
 
   selectedFrame$.next(null);
 }
 
-//
+/**
+ * @typedef {Object} ImportedData
+ * @property {number} id
+ * @property {number} positionId
+ */
+
+/**
+ *
+ * @param {ImportedData[]} data
+ */
+export function importData(data) {
+  const frameRaw = data.find(d => !d.positionId);
+
+  if (frameRaw) {
+    /**
+     * @type {Frame}
+     */
+    const frame = getDetailById(frameRaw.id).copy();
+    frame.connectionPoints.forEach(p => {
+      const detailRaw = data.find(d => d.positionId === p.id);
+      if (detailRaw) {
+        p.installedPart = getDetailById(detailRaw.id);
+      }
+    });
+
+    selectedFrame$.next(frame);
+  }
+}
+
+
 // /**
 //  *
 //  * @type {Frame}
@@ -173,4 +207,4 @@ export function clearAll() {
 //   selectedFrame$.next(frame);
 // }, 50);
 // allParts$.next(allDetails.filter(detail => !detail.isFrame()));
-//
+

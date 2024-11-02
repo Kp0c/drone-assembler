@@ -2,7 +2,7 @@ import template from './assembly-area.html?raw';
 import styles from './assembly-area.css?inline'
 import { BaseComponent } from '../base-component.js';
 import { Detail } from '../../models/detail.js';
-import { currentDragItem$, frames$, getDetailById, selectedFrame$, selectFrame, selectPart, stopDrag } from '../../services/state.service.js';
+import { currentDragItem$, frames$, getDetailById, importData, selectedFrame$, selectFrame, selectPart, stopDrag } from '../../services/state.service.js';
 import { canRedo$, canUndo$, redo, undo } from '../../services/history.service.js';
 
 export class AssemblyArea extends BaseComponent {
@@ -30,6 +30,8 @@ export class AssemblyArea extends BaseComponent {
         const id = +event.target.id.replace('select-', '');
 
         selectFrame(id);
+      } else if (event.target.id === 'import') {
+        this.#import();
       }
     }, {
       signal: this.destroyedSignal
@@ -134,6 +136,13 @@ export class AssemblyArea extends BaseComponent {
 
       this.#frames.appendChild(frameElement);
     });
+
+    const importButton = document.createElement('button');
+    importButton.textContent = 'Import';
+    importButton.id = 'import';
+    importButton.classList.add('primary');
+
+    this.#frames.appendChild(importButton);
   }
 
   /**
@@ -237,5 +246,64 @@ export class AssemblyArea extends BaseComponent {
 
       this.#workingArea.appendChild(partElement);
     });
+  }
+
+  /**
+   * Import from CSV/Json
+   */
+  #import() {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json,.csv';
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      const extension = file.name.split('.').pop();
+      reader.onload = () => {
+        this.#importData(reader.result, extension);
+      }
+
+      reader.readAsText(file);
+    }
+
+    fileInput.click();
+  }
+
+  /**
+   * Import the data
+   * @param {string} data
+   * @param {string} extension
+   */
+  #importData(data, extension) {
+    if (extension === 'json') {
+      this.#importJson(JSON.parse(data));
+    } else if (extension === 'csv') {
+      this.#importCsv(data);
+    }
+  }
+
+  #importJson(data) {
+    if (!Array.isArray(data)) {
+      return;
+    }
+
+    importData(data);
+  }
+
+  #importCsv(data) {
+    let rows = data.split('\n');
+
+    // ignore header
+    rows.shift();
+
+    const importedData = rows.map(row => {
+      const [id, positionId] = row.split(',');
+      return {
+        id: +id,
+        positionId: +positionId
+      }
+    });
+
+    importData(importedData);
   }
 }
