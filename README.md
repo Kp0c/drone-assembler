@@ -2,7 +2,7 @@
 The UI to assemble drones and share configuration with others
 
 ## Description
-This project is a template for vannila js + vite + vitest setup.
+This project is a DevChallenge XXI final submission.
 
 ## Technical information
 The solution is based on pure vanilla js with no libs using [Vite](https://vitejs.dev/) as a bundler.
