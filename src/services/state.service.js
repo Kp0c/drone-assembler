@@ -28,10 +28,10 @@ const allDetails = [
     { id: 9, type: 'radio-module', x: 1024, y: 400, size: 300, zIndex: 1 },
   ]),
 
-  new Detail(3, 'motor', 'FlashHobby 2807 1300kv + Props HQProp 7x4x3', 55, [7], '/images/3 - motor 7 inches 2807 1300kv+7x4x3.png'),
-  new Detail(4, 'motor', 'EMAX 2807 1300kv + Props HQProp 7x4x3', 45, [7], '/images/3 - motor 7 inches 2807 1300kv+7x4x3.png'),
-  new Detail(5, 'motor', 'ReadyToSky 3115 900kv + Props HQ MacroQuad Prop 10x5x3', 70, [10], '/images/4 - motor 10 inches 3115+10x5x3.png'),
-  new Detail(6, 'motor', 'BrotherHobby Tornado 3115 900kv + Props HQ MacroQuad Prop 10x5x3', 110, [10], '/images/4 - motor 10 inches 3115+10x5x3.png'),
+  new Detail(3, 'motor', 'FlashHobby 2807 1300kv + Props HQProp 7x4x3', 55, [7], '/images/3 - motor 7 inches 2807 1300kv - 7x4x3.png'),
+  new Detail(4, 'motor', 'EMAX 2807 1300kv + Props HQProp 7x4x3', 45, [7], '/images/3 - motor 7 inches 2807 1300kv - 7x4x3.png'),
+  new Detail(5, 'motor', 'ReadyToSky 3115 900kv + Props HQ MacroQuad Prop 10x5x3', 70, [10], '/images/4 - motor 10 inches 3115 - 10x5x3.png'),
+  new Detail(6, 'motor', 'BrotherHobby Tornado 3115 900kv + Props HQ MacroQuad Prop 10x5x3', 110, [10], '/images/4 - motor 10 inches 3115 - 10x5x3.png'),
 
   new Detail(7, 'battery', '6s2p 8000mAh', 60, [7, 10], '/images/5 - battery 6s2p.png'),
   new Detail(8, 'battery', '6s3p 12000mAh', 90, [7, 10], '/images/6 - battery 6s3p.png'),
