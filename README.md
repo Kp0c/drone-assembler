@@ -1,5 +1,6 @@
 # Drone assembler
-The UI to assemble drones and share configuration with others
+The UI to assemble drones and share configuration with others.
+https://drone-assembler.vercel.app/
 
 ## Description
 This project is a DevChallenge XXI final submission.
